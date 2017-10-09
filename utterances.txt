@@ -1,0 +1,15 @@
+StatusIntent status
+StatusIntent check my status
+StatusIntent check status
+
+MoveIntent move {direction}
+MoveIntent go {direction}
+MoveIntent try {direction}
+
+YesIntent yes
+YesIntent sure
+YesIntent okay
+
+NoIntent no
+NoIntent nope
+NoIntent negative

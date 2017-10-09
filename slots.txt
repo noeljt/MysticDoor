@@ -1,0 +1,5 @@
+DIRECTIONS
+north
+south
+east
+west

@@ -1,4 +1,4 @@
-from place.py import *
+from place import *
 
 class Player:
     def __init__(self, start):

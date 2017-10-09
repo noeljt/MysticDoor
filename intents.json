@@ -1,0 +1,22 @@
+{
+  "intents": [
+    {
+      "intent": "StatusIntent"
+    },
+    {
+      "intent": "MoveIntent",
+      "slots": [
+        {
+          "name": "direction",
+          "type": "DIRECTIONS"
+        }
+      ]
+    },
+    {
+      "intent": "YesIntent"
+    },
+    {
+      "intent": "NoIntent"
+    }
+  ]
+}
