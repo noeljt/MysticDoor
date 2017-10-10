@@ -2,6 +2,7 @@ from flask import Flask
 from flask_ask import Ask, statement, question, session
 from place import *
 from player import *
+from website import *
 import json
 import requests
 import time
@@ -11,6 +12,7 @@ import unidecode
 
 app = Flask(__name__)
 ask = Ask(app, "/test")
+app.register_blueprint(website)
 
 
 @app.route('/')
