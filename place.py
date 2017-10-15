@@ -1,47 +1,35 @@
-class Place:
+class Place(object):
     def __init__(self, place):
         self.id = int(place["id"])
-        self.description = place["data"]["description"]
-        self.north = place["data"]["north"]
-        self.east = place["data"]["east"]
-        self.south = place["data"]["south"]
-        self.west = place["data"]["west"]
-        if place["data"]["goal"] == "True":
+        self.desc = place["desc"]
+        self.north = int(place["north"])
+        self.east = int(place["east"])
+        self.south = int(place["south"])
+        self.west = int(place["west"])
+        if place["goal"] == "True":
             self.goal = True
         else:
             self.goal = False
 
-    # Add possible exits
-    def addExit(self, direction, exit):
-        if (direction == "north"):
-            self.north = exit
-        elif (direction == "east"):
-            self.east = exit
-        elif (direction == "south"):
-            self.south = exit
-        elif (direction == "west"):
-            self.west = exit
-        else:
-            return False
-        return True
-
-    def setDescription(self, str):
-        self.description = str
-
-    def setGoal(self):
-        self.goal = True
-
     def isGoal(self):
         return self.goal
 
+    def getDescription(self):
+        return self.desc
+
+    # returns dictonary of possible movement in {direction:placeID} format
     def getExits(self):
         options = {}
-        if self.north:
+        if self.north and self.north != -1:
             options["north"] = self.north
-        if self.east:
+        if self.east and self.east != -1:
             options["east"] = self.east
-        if self.south:
+        if self.south and self.south != -1:
             options["south"] = self.south
-        if self.west:
+        if self.west and self.west != -1:
             options["west"] = self.west
         return options
+
+    # returns a dictionary containing the properties of Place - JSON serializable
+    def export(self):
+        return self.__dict__

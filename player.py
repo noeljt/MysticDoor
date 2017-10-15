@@ -1,21 +1,18 @@
-from place import *
-
-class Player:
-    def __init__(self, start):
-        self.name = "Default"
-        self.location = start
+class Player(object):
+    def __init__(self, data):
+        self.name = data["name"]
+        self.location = int(data["location"])
 
     # Add possible exits
-    def move(self, direction):
-        options = self.location.getOptions()
-        if direction in options:
-            self.location = options[direction]
-            return True
-        else:
-            return False
+    def move(self, location):
+        self.location = location
 
     def getLocation(self):
         return self.location
 
     def getName(self):
         return self.name
+
+    # returns a dictionary of Player properties - JSON serializable
+    def export(self):
+        return self.__dict__

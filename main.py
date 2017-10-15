@@ -21,8 +21,8 @@ def homepage():
 
 # Functions
 
-# This is where we will load data from the XML file in the future
-def get_data():
+# This is where we will get data in JSON format from the database
+def getData():
     data = {}
     data["player"] = {"name": "Joe", "location": "0"}
     data["places"] = []
@@ -37,14 +37,20 @@ def get_data():
     data["places"].append({"id": "8", "desc":"(2,2)", "north":"-1", "east":"-1", "south":"-1", "west":"7", "goal":"True"})
     return data
 
-# Temporary - will be moved to class logic
-def get_options(place):
-    options = {}
-    for key in place:
-        if key == "north" or key == "east" or key == "south" or key == "west":
-            if place[key] != "-1":
-                options[key] = place[key]
-    return options
+# Converts JSON session data into classes
+def loadData():
+    data = session.attributes["game"]
+    player = Player(data["player"])
+    places = [Place(p) for p in data["places"]]
+    location = places[player.getLocation()]
+    return (player, places, location)
+
+# Converts classes into JSON data and saves in session.attributes
+def saveData(player, places):
+    data = {}
+    data["player"] = player.export()
+    data["places"] = [p.export() for p in places]
+    session.attributes["game"] = data
 
 # Alexa Logic
 
@@ -52,26 +58,25 @@ def get_options(place):
 @ask.launch
 def launchSkill():
     welcome_message = "Welcome to the Mystic Door 3 by 3 maze adventure. Would you like to check your status or move?"
-    session.attributes['game'] = get_data()
+    session.attributes['game'] = getData()
     return question(welcome_message)
 
 
 # Tells where the player is and their movement options
 @ask.intent("StatusIntent")
 def status():
-    game = session.attributes['game']
-    player = game["player"]
-    places = game["places"]
-    player_location = places[int(player["location"])]
-    location = "You are located at %s." % (player_location["desc"])
-    options = get_options(player_location)
+    # Pull data froms session and convert to classes
+    player, places, location = loadData()
+    # Find current location
+    response = "You are located at %s." % (location.getDescription())
+    options = location.getExits()
     if len(options) == 0:
-        response = "You are trapped."
+        response += "You are trapped."
     elif len(options) == 1:
-        response = "Your only option is %s." % (options.keys()[0])
+        response += "Your only option is %s." % (options.keys()[0])
     else:
         option_string = ", ".join(options.keys())
-        response = "Your options are %s." % (option_string)
+        response += "Your options are %s." % (option_string)
 
     response += " Would you like to move or check your status again?"
     return question(response)
@@ -80,28 +85,31 @@ def status():
 # User tries to move in a direction
 @ask.intent("MoveIntent")
 def move(direction):
-    game = session.attributes["game"]
-    player = game["player"]
-    places = game["places"]
-    player_location = places[int(player["location"])]
-    options = get_options(player_location)
+    # Pull data froms session and convert to classes
+    player, places, location = loadData()
+    # Make sure movement is valid
+    options = location.getExits()
     if direction in options.keys():
-        player["location"] = options[direction]
-        player_location = places[int(player["location"])]
-        result = "You moved %s to %s." % (direction, player_location["desc"])
+        player.move(options[direction])
+        location = places[options[direction]]
+        result = "You moved %s to %s." % (direction, location.getDescription())
     else:
         result = "You can't move that direction."
 
-    if player_location["goal"] == "True":
+    # Check if location is the end
+    if location.isGoal():
         result += " You have reached the end of the maze. Would you like to play again?"
     else:
         result += "Would you like to move or check your status?"
+
+    # Save current game state
+    saveData(player, places)
 
     return question(result)
 
 @ask.intent("YesIntent")
 def yes():
-    session.attributes["game"] = get_data()
+    session.attributes["game"] = getData()
     text = "A new game has been made. Would you like to move or check your status?"
     return question(text)
 
