@@ -1,0 +1,30 @@
+<dungeon>
+<room id="0">
+	<desc>The room is dark and dank. The only light comes from the single exit to the room.</desc>
+	<north>1</north>
+	<east></east>
+	<west></west>
+	<south></south>
+	<object name="chair"></object>
+	<goal></goal>
+</room>
+<room id="1">
+	<desc>A narrow hallway illuminated by the flickering light of a torch mounted on the wall.</desc>
+	<north>2</north>
+	<east></east>
+	<west></west>
+	<south>0</south>
+	<object name="torch"></object>
+	<goal></goal>
+</room>
+<room id="2">
+	<desc>This is the room you have been looking for. A large chest sits in the center.</desc>
+	<north></north>
+	<east></east>
+	<west></west>
+	<south>1</south>
+	<object name="chest"></object>
+	<goal>true</goal>
+</room>
+
+</dungeon>
