@@ -2,14 +2,39 @@ class Place(object):
     def __init__(self, place):
         self.id = int(place["id"])
         self.desc = place["desc"]
-        self.north = int(place["north"])
-        self.east = int(place["east"])
-        self.south = int(place["south"])
-        self.west = int(place["west"])
-        if place["goal"] == "True":
+        if "north" in place:
+            self.north = int(place["north"])
+        if "east" in place:
+            self.east = int(place["east"])
+        if "south" in place:
+            self.south = int(place["south"])
+        if "west" in place:
+            self.west = int(place["west"])
+        if "goal" in place:
             self.goal = True
         else:
             self.goal = False
+        if "items" in place:
+            self.items = [int(item) for item in place["items"]]
+        else:
+            self.items = []
+
+    def hasItems(self):
+        if len(self.items) == 0:
+            return False
+        return True
+
+    def addItem(self, item):
+        self.items.append(item)
+
+    def removeItem(self, item):
+        self.items.remove(item)
+
+    def getItem(self, item):
+        return self.items.pop(self.items.index(item))
+
+    def getItems(self):
+        return self.items
 
     def isGoal(self):
         return self.goal
@@ -20,13 +45,13 @@ class Place(object):
     # returns dictonary of possible movement in {direction:placeID} format
     def getExits(self):
         options = {}
-        if self.north and self.north != -1:
+        if self.north:
             options["north"] = self.north
-        if self.east and self.east != -1:
+        if self.east:
             options["east"] = self.east
-        if self.south and self.south != -1:
+        if self.south:
             options["south"] = self.south
-        if self.west and self.west != -1:
+        if self.west:
             options["west"] = self.west
         return options
 
