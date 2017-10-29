@@ -1,8 +1,8 @@
 class Item(object):
-    def __init__(self, data, description):
+    def __init__(self, data):
         self.name = data["name"]
         self.location = int(data["location"])
-        self.description = data["description"]
+        self.description = data["desc"]
 
     def getLocation(self):
         return self.location
