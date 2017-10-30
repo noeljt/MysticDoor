@@ -3,6 +3,7 @@ from flask_ask import Ask, statement, question, session
 from place import *
 from player import *
 from website import *
+from narration import *
 import json
 import requests
 import time
@@ -26,7 +27,7 @@ def getData():
     data = {}
     data["player"] = {"name": "Joe", "location": "0"}
     data["places"] = []
-    data["places"].append({"id": "0", "desc":"(0,0)", "north":"-1", "east":"1", "south":"-1", "west":"-1", "goal":"False"})
+    data["places"].append({"id": "0", "desc":"a nice lake", "north":"-1", "east":"1", "south":"-1", "west":"-1", "goal":"False"})
     data["places"].append({"id": "1", "desc":"(1,0)", "north":"4", "east":"2", "south":"-1", "west":"0", "goal":"False"})
     data["places"].append({"id": "2", "desc":"(2,0)", "north":"3", "east":"-1", "south":"-1", "west":"1", "goal":"False"})
     data["places"].append({"id": "3", "desc":"(2,1)", "north":"-1", "east":"1", "south":"2", "west":"4", "goal":"False"})
@@ -68,7 +69,8 @@ def status():
     # Pull data froms session and convert to classes
     player, places, location = loadData()
     # Find current location
-    response = "You are located at %s." % (location.getDescription())
+    #response = "You are located at %s." % (location.getDescription())
+    response = Narration.rand_room_leadin() + " " + location.getDescription() + ". "
     options = location.getExits()
     if len(options) == 0:
         response += "You are trapped."
@@ -92,9 +94,9 @@ def move(direction):
     if direction in options.keys():
         player.move(options[direction])
         location = places[options[direction]]
-        result = "You moved %s to %s." % (direction, location.getDescription())
+        result = Narration.rand_move_narration() + " " + str(direction) + ". "
     else:
-        result = "You can't move that direction."
+        result = "You can't move that direction. "
 
     # Check if location is the end
     if location.isGoal():
