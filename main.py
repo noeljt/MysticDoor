@@ -3,7 +3,7 @@ from flask_ask import Ask, statement, question, session
 from place import *
 from player import *
 from website import *
-from narration import *
+from narrator import *
 import json
 import requests
 import time
@@ -70,7 +70,7 @@ def status():
     player, places, location = loadData()
     # Find current location
     #response = "You are located at %s." % (location.getDescription())
-    response = Narration.rand_room_leadin() + " " + location.getDescription() + ". "
+    response = Narrator.randRoomLeadin() + " " + location.getDescription() + ". "
     options = location.getExits()
     if len(options) == 0:
         response += "You are trapped."
@@ -94,7 +94,7 @@ def move(direction):
     if direction in options.keys():
         player.move(options[direction])
         location = places[options[direction]]
-        result = Narration.rand_move_narration() + " " + str(direction) + ". "
+        result = Narrator.randMoveNarration() + " " + str(direction) + ". "
     else:
         result = "You can't move that direction. "
 
