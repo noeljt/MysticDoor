@@ -3,7 +3,7 @@ class Item(object):
         self.id = int(data["id"])
         self.name = data["name"]
         self.location = int(data["location"])
-        self.description = data["desc"]
+        self.desc = data["desc"]
 
     def getID(self):
         return self.id
@@ -15,7 +15,7 @@ class Item(object):
         return self.name
 
     def getDescription(self):
-        return self.description
+        return self.desc
 
     # returns a dictionary of Item properties - JSON serializable
     def export(self):

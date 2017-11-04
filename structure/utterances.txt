@@ -13,3 +13,7 @@ YesIntent okay
 NoIntent no
 NoIntent nope
 NoIntent negative
+
+ExamineIntent examine
+ExamineIntent {choice}
+ExamineIntent Examine {choice}

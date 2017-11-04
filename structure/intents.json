@@ -13,6 +13,15 @@
       ]
     },
     {
+      "intent": "ExamineIntent",
+      "slots": [
+        {
+          "name": "choice",
+          "type": "CHOICES"
+        }
+      ]
+    },
+    {
       "intent": "YesIntent"
     },
     {

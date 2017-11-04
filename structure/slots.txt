@@ -3,3 +3,9 @@ north
 south
 east
 west
+
+CHOICES
+A
+B
+C
+D
