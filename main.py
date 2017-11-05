@@ -36,9 +36,9 @@ def getData():
     # Generate one place
     data["places"].append({"id":"2", "desc":"a four door elevator you can feel moving"})
     # Generate two places
-    data["places"].append({"id":"3", "desc":"a classroom with the number 6113 on the door and a lone paper on the floor", "items":["3"]})
+    data["places"].append({"id":"3", "desc":"a classroom with the number 6113 on the door and a lone paper on the floor", "goal":"True" "items":["3"]})
 
-    # Generated filler places
+    # Generate filler places
     places = [Place(p) for p in data["places"]]
     g = Generator()
     places += [Place(p) for p in g.generateRooms(places, 2, 0, 1, "south")]
@@ -97,26 +97,30 @@ def status():
     if location.hasItems():
         roomItems = location.getItems()
         if len(roomItems) == 0:
-            response += "There are no items in this place. "
+            response += "There are no items here. "
         elif len(roomItems) == 1:
-            response += "There is %s in this place. " % (items[roomItems[0]].getDescription())
+            response += "There is %s here. " % (items[roomItems[0]].getDescription())
         else:
             itemNames = [items[i].getDescription() for i in roomItems]
             itemNames.insert(-2, "and")
-            response += "There is %s in this place. " %(", ".join(itemNames))
-    # Possible exits from location
-    exits = location.getExits()
-    if len(exits) == 0:
-        response += "You are trapped. "
-    elif len(exits) == 1:
-        response += "Your only option is %s. " % (exits.keys()[0])
+            response += "There is %s here. " %(", ".join(itemNames))
+    if location.isGoal():
+        response += "This is the end. Would you like to play again? "
     else:
-        exitsString = ", ".join(exits.keys())
-        response += "Your options are %s. " % (exitsString)
+        # Possible exits from location
+        exits = location.getExits()
+        if len(exits) == 0:
+            response += "There are no exits, you are trapped. "
+        elif len(exits) == 1:
+            response += "The only exit is %s. " % (exits.keys()[0])
+        else:
+            tempKeys = exits.keys()
+            tempKeys[-2] = "or"
+            exitsString = ", ".join(tempKeys)
+            response += "You could go %s. " % (exitsString)
+        response += "What would you like to do next? "
 
-    response += "What would you like to do next? "
     return question(response)
-
 
 # User tries to move in a direction
 @ask.intent("MoveIntent")
@@ -131,17 +135,10 @@ def move(direction):
         result = Narrator.randMoveNarration() + " " + str(direction) + " into " + location.getDescription() + ". "
     else:
         result = "You can't move that direction. "
-
-    # Check if location is the end
-    if location.isGoal():
-        result += "You have reached the end of the maze. Would you like to play again? "
-    else:
-        result += "What would you like to do next? "
-
     # Save current game state
     saveData(player, places, items)
 
-    return question(result)
+    return question(result + "What would you like to do next? ")
 
 @ask.intent("ExamineIntent")
 def examine(choice):
