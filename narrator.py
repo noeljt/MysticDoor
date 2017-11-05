@@ -3,7 +3,8 @@ from random import choice
 
 class Narrator:
 
-    move = ["You stumble along", "You wander", "You head", "You walk", "You move"]
+    move = ["You stumble along", "You wander",
+            "You head", "You walk", "You move"]
     roomLeadin = ["You can see", "There is"]
 
     def __init__(self):

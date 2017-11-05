@@ -79,6 +79,6 @@ class Place(object):
             options["west"] = self.west
         return options
 
-    # returns a dictionary containing the properties of Place - JSON serializable
+    # returns a JSON serializable dictionary
     def export(self):
         return self.__dict__
