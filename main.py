@@ -30,27 +30,27 @@ def getData():
     data["player"] = {"name": "Joe", "location": "0"}
 
     data["places"] = []
-    data["places"].append({"id": "0", "desc":"a nice lake", "east":"1"})
-    data["places"].append({"id": "1", "desc":"a room with a potion on the floor", "north":"4", "east":"2", "west":"0", "items":["2"]})
-    data["places"].append({"id": "2", "desc":"a dirt path", "north":"3", "west":"1"})
-    data["places"].append({"id": "3", "desc":"a grassy scene with a sword in a stone", "east":"1", "south":"2", "west":"4", "items":["1"]})
-    data["places"].append({"id": "4", "desc":"a volcanoe", "east":"3", "south":"1", "west":"5"})
-    data["places"].append({"id": "5", "desc":"your dining room with a sandwhich and a laptop on the table", "north":"6", "east":"4", "items":["0", "3"]})
-    data["places"].append({"id": "6", "desc":"siri's server room", "east":"7", "south":"5"})
-    data["places"].append({"id": "7", "desc":"Amazon headquarters", "west":"6"})
-    data["places"].append({"id": "8", "desc":"A bottomless abyss", "goal":"True"})
+    data["places"].append({"id":"0", "desc":"a dark room with a single candle in the center", "items":["0"]})
+    # Generate two places
+    data["places"].append({"id":"1", "desc":"a brightly lit hallway with a picture hanging on the wall", "items":["1", "2"]})
+    # Generate one place
+    data["places"].append({"id":"2", "desc":"a four door elevator you can feel moving"})
+    # Generate two places
+    data["places"].append({"id":"3", "desc":"a classroom with the number 6113 on the door and a lone paper on the floor", "items":["3"]})
 
-    # Some generated data
+    # Generated filler places
     places = [Place(p) for p in data["places"]]
     g = Generator()
-    places += [Place(p) for p in g.generateRooms(places, 4, 7, 8, "south")]
+    places += [Place(p) for p in g.generateRooms(places, 2, 0, 1, "south")]
+    places += [Place(p) for p in g.generateRooms(places, 1, 1, 2, "west")]
+    places += [Place(p) for p in g.generateRooms(places, 2, 2, 3, "east")]
     data["places"] = [p.export() for p in places]
 
     data["items"] = []
-    data["items"].append({"id": "0", "name": "sandwich", "location": "5", "desc": "A delicious ham and cheese sandwich on white bread"})
-    data["items"].append({"id": "1", "name": "sword", "location": "3", "desc": "A sword in a stone"})
-    data["items"].append({"id": "2", "name": "potion", "location": "1", "desc": "A mysterious potion"})
-    data["items"].append({"id": "3", "name": "laptop", "location": "5", "desc": "A beat up laptop"})
+    data["items"].append({"id":"0", "name":"candle", "desc":"a lit red candle with the letters R, P , and I on it"})
+    data["items"].append({"id":"1", "name":"picture", "desc":"a picture of a woman with the name Shirley Ann Jackson engraved on the frame"})
+    data["items"].append({"id":"2", "name":"picture", "desc":"a picture of a man with an engraving reading, Dr. William Weightman Walker"})
+    data["items"].append({"id":"3", "name":"paper", "desc":"a paper with a graded quiz and your name on it... you did not do well"})
 
     return data
 

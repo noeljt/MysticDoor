@@ -2,14 +2,10 @@ class Item(object):
     def __init__(self, data):
         self.id = int(data["id"])
         self.name = data["name"]
-        self.location = int(data["location"])
         self.desc = data["desc"]
 
     def getID(self):
         return self.id
-
-    def getLocation(self):
-        return self.location
 
     def getName(self):
         return self.name

@@ -5,7 +5,7 @@ class Generator(object):
     # For now, these are here, but in the future we should load these from mongoDB
     # Also will need some way to differentiate between settings
 
-    descriptions = ["a lake", "a pond", "a dusty trail", "a gorgeous meadow", "a grove of trees", "an overlook", "a river", "a vast bridge handing over a steep chasm"]
+    descriptions = ["a hallway", "a dark room", "a class room", "a lecture hall", "a janitor's closet", "a supply closet", "a staircase"]
     directions = ["north", "east", "south", "west"]
     opposite = {"north":"south", "east":"west", "south":"north", "west":"east"}
 
