@@ -30,6 +30,16 @@ class Place(object):
         else:
             self.items = []
 
+    def changeExit(self, direction, ID):
+        if direction == "north":
+            self.north = ID
+        elif direction == "east":
+            self.east = ID
+        elif direction == "south":
+            self.south = ID
+        else:
+            self.west = ID
+
     def getID(self):
         return self.id
 

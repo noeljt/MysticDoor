@@ -5,6 +5,7 @@ from player import *
 from item import *
 from website import *
 from narrator import *
+from generator import *
 import json
 import requests
 import time
@@ -36,8 +37,14 @@ def getData():
     data["places"].append({"id": "4", "desc":"a volcanoe", "east":"3", "south":"1", "west":"5"})
     data["places"].append({"id": "5", "desc":"your dining room with a sandwhich and a laptop on the table", "north":"6", "east":"4", "items":["0", "3"]})
     data["places"].append({"id": "6", "desc":"siri's server room", "east":"7", "south":"5"})
-    data["places"].append({"id": "7", "desc":"Amazon headquarters", "east":"8", "west":"6"})
-    data["places"].append({"id": "8", "desc":"A bottomless abyss", "west":"7", "goal":"True"})
+    data["places"].append({"id": "7", "desc":"Amazon headquarters", "west":"6"})
+    data["places"].append({"id": "8", "desc":"A bottomless abyss", "goal":"True"})
+
+    # Some generated data
+    places = [Place(p) for p in data["places"]]
+    g = Generator()
+    places += [Place(p) for p in g.generateRooms(places, 4, 7, 8, "south")]
+    data["places"] = [p.export() for p in places]
 
     data["items"] = []
     data["items"].append({"id": "0", "name": "sandwich", "location": "5", "desc": "A delicious ham and cheese sandwich on white bread"})
@@ -69,19 +76,21 @@ def saveData(player, places, items):
 # App starts here
 @ask.launch
 def launchSkill():
-    welcome_message = "Welcome to the Mystic Door 3 by 3 maze adventure. "
+    welcome_message = "Welcome to the Mystic Door. "
     # Load game instance into session
     session.attributes['game'] = getData()
     # Pull data froms session and convert to classes
     player, places, items, location = loadData()
     # Tell current location
-    welcome_message += "You are in %s. What would you like to do next? " % (location.getDescription())
+    welcome_message += "You are in %s. What would you like to do? " % (location.getDescription())
     return question(welcome_message)
 
 
 # Tells where the player is and their movement options
 @ask.intent("StatusIntent")
 def status():
+    # Pull data froms session and convert to classes
+    player, places, items, location = loadData()
     # Find current location
     response = Narrator.randRoomLeadin() + " " + location.getDescription() + ". "
     # Items in location
@@ -105,7 +114,7 @@ def status():
         exitsString = ", ".join(exits.keys())
         response += "Your options are %s. " % (exitsString)
 
-    response += "Would you like to do next? "
+    response += "What would you like to do next? "
     return question(response)
 
 
@@ -127,7 +136,7 @@ def move(direction):
     if location.isGoal():
         result += "You have reached the end of the maze. Would you like to play again? "
     else:
-        result += "Would you like to do next? "
+        result += "What would you like to do next? "
 
     # Save current game state
     saveData(player, places, items)
