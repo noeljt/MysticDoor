@@ -40,7 +40,7 @@ def getData():
     # Generate two places
     data["places"].append({
         "id": "1",
-        "desc": "a brightly lit hallway with a picture hanging on the wall",
+        "desc": "a brightly lit hallway with two pictures hanging on the wall",
         "items": ["1", "2"]
     })
     # Generate one place
@@ -53,16 +53,22 @@ def getData():
         "id": "3",
         "desc": "a classroom with the number 6113 on the door" +
                 " and a lone paper on the floor",
-        "goal": "True",
+        "south": "4",
         "items": ["3"]
+    })
+    data["places"].append({
+        "id": "4",
+        "desc": "your house",
+        "north": "3",
+        "goal": "True"
     })
 
     # Generate filler places
     places = [Place(p) for p in data["places"]]
     g = Generator()
-    places += [Place(p) for p in g.generateRooms(places, 2, 0, 1, "south")]
-    places += [Place(p) for p in g.generateRooms(places, 1, 1, 2, "west")]
-    places += [Place(p) for p in g.generateRooms(places, 2, 2, 3, "east")]
+    places += [Place(p) for p in g.generateRooms(places, 2, 0, "east", 1, "south")]
+    places += [Place(p) for p in g.generateRooms(places, 1,  1, "north", 2, "west")]
+    places += [Place(p) for p in g.generateRooms(places, 2,  2, "south", 3, "east")]
     data["places"] = [p.export() for p in places]
 
     data["items"] = []
@@ -134,21 +140,15 @@ def status():
 
     # Pull data froms session and convert to classes
     player, places, items, location = loadData()
-    # Find current location
-    response = Narrator.randRoomLeadin() + " "
-    response += location.getDescription() + ". "
     # Items in location
     if location.hasItems():
         roomItems = location.getItems()
-        if len(roomItems) == 0:
-            response += "There are no items here. "
-        elif len(roomItems) == 1:
-            response += "There is %s" % (items[roomItems[0]].getDescription())
-            response += " here. "
+        if len(roomItems) == 1:
+            response = "There is one item here. "
         else:
-            itemNames = [items[i].getDescription() for i in roomItems]
-            itemNames.insert(-2, "and")
-            response += "There is %s here. " % (", ".join(itemNames))
+            response = "There are %d items here. " % (len(roomItems))
+    else:
+        response = "There are no items here. "
     if location.isGoal():
         response += "This is the end. Would you like to play again? "
     else:
@@ -160,9 +160,9 @@ def status():
             response += "The only exit is %s. " % (exits.keys()[0])
         else:
             tempKeys = exits.keys()
-            tempKeys[-2] = "or"
+            tempKeys.insert(-1, "and")
             exitsString = ", ".join(tempKeys)
-            response += "You could go %s. " % (exitsString)
+            response += "There are exits to the %s. " % (exitsString)
         response += "What would you like to do next? "
 
     return question(response)
@@ -194,7 +194,7 @@ def examine(choice):
     # Load session data into variables
     player, places, items, location = loadData()
     # For now we can only handle max four items
-    letters = ["a", "b", "c", "d"]
+    letters = ["a", "B.", "C", "D"]
     # Load items from location into options {letter:itemID}
     options = {}
     locationItems = location.getItems()
@@ -210,19 +210,19 @@ def examine(choice):
         print choice
         if len(options) == 0:
             response = "You stare at your feet since"
-            response += " there are no items in the room. "
+            response += " there are no items here. "
         elif len(options) == 1:
-            response = "There is only one item in the room"
+            response = "There is only one item here"
             response += ", it is %s. " % (items[options["a"]].getDescription())
         else:
-            response = "Which item would you like to examine?"
+            response = "Which item would you like to examine? "
             response += " Your options are "
             # Create a list of options and turn it into poor english
             temp = []
             for option in options:
                 temp.append(option)
-                temp.append(items[options[option]].getDescription())
-            temp[-2] = "or"
+                temp.append(items[options[option]].getName())
+            temp.insert(-2, "or")
             response += ", ".join(temp)
             response += ". "
             return question(response)

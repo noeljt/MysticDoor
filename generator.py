@@ -16,16 +16,10 @@ class Generator(object):
         # Type
         self.setting = setting
 
-    def generateRooms(self, places, num, entrance, exit=-1, exitDirection=""):
+    def generateRooms(self, places, num, entrance, entranceDirection, exit=-1, exitDirection=""):
         # Tie entrance to first generated place
-        exits = places[entrance].getExits()
-        if len(exits) < 4:
-            # This is potentially very ineffecient...
-            while True:
-                direction = choice(Generator.directions)
-                if direction not in exits:
-                    places[entrance].changeExit(direction, len(places))
-                    break
+        direction = entranceDirection
+        places[entrance].changeExit(direction, len(places))
         # Start generating rooms
         result = []
         for x in range(0, num):
