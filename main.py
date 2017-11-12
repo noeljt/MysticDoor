@@ -66,9 +66,12 @@ def getData():
     # Generate filler places
     places = [Place(p) for p in data["places"]]
     g = Generator()
-    places += [Place(p) for p in g.generateRooms(places, 2, 0, "east", 1, "south")]
-    places += [Place(p) for p in g.generateRooms(places, 1,  1, "north", 2, "west")]
-    places += [Place(p) for p in g.generateRooms(places, 2,  2, "south", 3, "east")]
+    places += [Place(p) for p in
+               g.generateRooms(places, 2, 0, "east", 1, "south")]
+    places += [Place(p) for p in
+               g.generateRooms(places, 1,  1, "north", 2, "west")]
+    places += [Place(p) for p in
+               g.generateRooms(places, 2,  2, "south", 3, "east")]
     data["places"] = [p.export() for p in places]
 
     data["items"] = []
@@ -131,7 +134,8 @@ def launchSkill():
     # Tell current location
     welcome_message += "You are in %s. " % (location.getDescription())
     welcome_message += "What would you like to do? "
-    return question(welcome_message)
+    return question(welcome_message).reprompt(
+        "You can move, check your status, or examine items.")
 
 
 @ask.intent("StatusIntent")
@@ -165,7 +169,8 @@ def status():
             response += "There are exits to the %s. " % (exitsString)
         response += "What would you like to do next? "
 
-    return question(response)
+    return question(response).reprompt(
+        "You can move, check your status, or examine items.")
 
 
 @ask.intent("MoveIntent")
@@ -186,7 +191,8 @@ def move(direction):
     # Save current game state
     saveData(player, places, items)
 
-    return question(result + "What would you like to do next? ")
+    return question(result + "What would you like to do next? ").reprompt(
+        "You can move, check your status, or examine items.")
 
 
 @ask.intent("ExamineIntent")
@@ -227,7 +233,8 @@ def examine(choice):
             response += ". "
             return question(response)
     response += "What would you like to do next? "
-    return question(response)
+    return question(response).reprompt(
+        "You can move, check your status, or examine items.")
 
 
 @ask.intent("YesIntent")
@@ -235,7 +242,8 @@ def yes():
     session.attributes["game"] = getData()
     text = "A new game has been made. "
     text += "Would you like to move or check your status? "
-    return question(text)
+    return question(text).reprompt(
+        "You can move, check your status, or examine items.")
 
 
 @ask.intent("NoIntent")
