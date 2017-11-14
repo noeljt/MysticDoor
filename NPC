@@ -1,0 +1,19 @@
+"""
+name: 
+description:
+dialogue:
+answer:
+
+ghost
+jane
+transparent women with blood shot eyes in a floor length gown
+"Have you come here for my treasure, Yes or No"
+if yes: "YOU FOOL! YOU'LL NEVER FIND IT"
+if no: "YOU FOOL! MY TREASURE ISN'T GOOD ENOUGH FOR YOU?!?!?!?!!"
+
+rabbit
+Herald
+a small mound of brown with a little white cotton tail
+"The rabbit twitches his nose and runs away, what did you expect?"
+ 
+"""
