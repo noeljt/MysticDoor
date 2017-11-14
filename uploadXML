@@ -1,0 +1,8 @@
+<FORM NAME="myForm"
+   ACTION=""
+   ENCTYPE="multipart/form-data"
+   METHOD="post">
+   <INPUT type="file" name="myFile1" accept="text/xml" >
+  
+   <INPUT TYPE="submit" VALUE="Upload File" onclick="return check()">
+</FORM>
