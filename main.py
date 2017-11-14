@@ -79,26 +79,29 @@ def getData():
         "id": "0",
         "name": "candle",
         "desc": "a lit red candle with the letters R, P , and I on it"
+        "action": ["blow it out","lift it up", "put it down", "throw it away", "add to your inventory", "light it"]
     })
     data["items"].append({
         "id": "1",
         "name": "picture",
         "desc": "a picture of a woman with the name" +
                 " Shirley Ann Jackson engraved on the frame"
+        "action": ["draw on it", "pick it up", "put it down", "move it", "add to your inventory", "light it on fire"]
     })
     data["items"].append({
         "id": "2",
         "name": "picture",
         "desc": "a picture of a man with an engraving reading," +
                 " Dr. William Weightman Walker"
+        "action": ["draw on it", "pick it up", "put it down", "move it", "add to your inventory", "light it on fire"]
     })
     data["items"].append({
         "id": "3",
         "name": "paper",
         "desc": "a paper with a graded quiz and your" +
                 " name on it... you did not do well"
+        "action": ["draw on it", "pick it up", "put it down", "move it", "add to your inventory", "light it on fire"]
     })
-
     return data
 
 
@@ -110,7 +113,6 @@ def loadData():
     items = [Item(i) for i in data["items"]]
     location = places[player.getLocation()]
     return (player, places, items, location)
-
 
 def saveData(player, places, items):
     # Converts classes into JSON data and saves in session.attributes
