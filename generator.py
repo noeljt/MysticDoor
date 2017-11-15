@@ -12,6 +12,11 @@ class Generator(object):
     opposite = {"north": "south", "east": "west",
                 "south": "north", "west": "east"}
 
+    itemAdjectives = ["dirty", "colorful", "extremely large", "boring old",
+                      "tiny", "old", "new"]
+    itemNouns = ["flower", "shrub", "notebook", "rock", "pencil", "plank",
+                 "nail", "ring", "band poster", "garden gnome", "cup", "coin"]
+
     def __init__(self, setting=""):
         # Type
         self.setting = setting
@@ -69,3 +74,12 @@ class Generator(object):
                             break
         # Return JSON version of place objects
         return result
+
+    def randItemData(self, id):
+        noun = choice(self.itemNouns)
+        data = {
+            "id": str(id),
+            "name": noun,
+            "desc": "a " + choice(self.itemAdjectives) + " " + noun
+        }
+        return data
