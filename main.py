@@ -107,11 +107,10 @@ def getData():
         # Append new item to the item data
         data["items"].append(g.randItemData(id))
         # Choose a random place by id
-        rand_place_id = random.randint(0, len(data["places"]))
+        rand_place_id = random.randint(0, len(data["places"])-1)
         # Append new item id to the place items data
         data["places"][rand_place_id]["items"].append(id)
 
-    print data
     return data
 
 def constructStatusString():
