@@ -116,7 +116,6 @@ def getData():
 
 def constructStatusString():
     # Tells where the player is and their movement options
-
     # Pull data froms session and convert to classes
     player, places, items, location = loadData()
     # Items in location
@@ -128,6 +127,12 @@ def constructStatusString():
             response = "There are %d items here. " % (len(roomItems))
     else:
         response = "There are no items here. "
+    response += constructExitsString()
+    return response
+
+def constructExitsString():
+    player, places, items, location = loadData()
+    response = ""
     if location.isGoal():
         response += "This is the end. Would you like to play again? "
     else:
@@ -143,6 +148,7 @@ def constructStatusString():
             exitsString = ", ".join(tempKeys)
             response += "There are exits to the %s. " % (exitsString)
     return response
+
 
 
 def loadData():
@@ -207,7 +213,8 @@ def move(direction):
     # Save current game state
     saveData(player, places, items)
 
-    result += constructStatusString()
+    # Read the exits of the new location
+    result += constructExitsString()
 
     return question(result + "What would you like to do next? ").reprompt(
         "You can move, check your status, or examine items.")
