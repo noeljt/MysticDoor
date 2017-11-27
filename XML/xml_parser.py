@@ -1,4 +1,9 @@
 import xml.etree.ElementTree as ET
+import json
+from xmljson import Cobra
+from collections import OrderedDict
+from json import dumps
+
 
 def parsexml(file):
 	tree = ET.parse(file)
@@ -32,3 +37,10 @@ def parsexml(file):
 		r.append(t)
 	return r
 
+def parseXmlToJson(file):
+	c = Cobra()
+	r = c.data(ET.parse(file).getroot())
+	return r
+
+results = parseXmlToJson("place_only.xml")
+print(dumps(results))
