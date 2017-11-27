@@ -10,6 +10,7 @@ import json
 import requests
 import time
 import unidecode
+import random
 
 # Flask Logic
 
@@ -99,7 +100,55 @@ def getData():
                 " name on it... you did not do well"
     })
 
+    # Generate 5 new random items and add each one to a random place
+    for i in range(5):
+        # Ids 0-3 are taken so start at 4
+        id = 4+i
+        # Append new item to the item data
+        data["items"].append(g.randItemData(id))
+        # Choose a random place by id
+        rand_place_id = random.randint(0, len(data["places"]))
+        # Append new item id to the place items data
+        data["places"][rand_place_id]["items"].append(id)
+
+    print data
     return data
+
+def constructStatusString():
+    # Tells where the player is and their movement options
+    # Pull data froms session and convert to classes
+    player, places, items, location = loadData()
+    # Items in location
+    if location.hasItems():
+        roomItems = location.getItems()
+        if len(roomItems) == 1:
+            response = "There is one item here. "
+        else:
+            response = "There are %d items here. " % (len(roomItems))
+    else:
+        response = "There are no items here. "
+    response += constructExitsString()
+    return response
+
+def constructExitsString():
+    player, places, items, location = loadData()
+    response = ""
+    if location.isGoal():
+        response += "This is the end. Would you like to play again? "
+    else:
+        # Possible exits from location
+        exits = location.getExits()
+        if len(exits) == 0:
+            response += "There are no exits, you are trapped. "
+        elif len(exits) == 1:
+            response += "The only exit is %s. " % (exits.keys()[0])
+        else:
+            tempKeys = exits.keys()
+            tempKeys.insert(-1, "and")
+            exitsString = ", ".join(tempKeys)
+            response += "There are exits to the %s. " % (exitsString)
+    return response
+
 
 
 def loadData():
@@ -140,35 +189,8 @@ def launchSkill():
 
 @ask.intent("StatusIntent")
 def status():
-    # Tells where the player is and their movement options
-
-    # Pull data froms session and convert to classes
-    player, places, items, location = loadData()
-    # Items in location
-    if location.hasItems():
-        roomItems = location.getItems()
-        if len(roomItems) == 1:
-            response = "There is one item here. "
-        else:
-            response = "There are %d items here. " % (len(roomItems))
-    else:
-        response = "There are no items here. "
-    if location.isGoal():
-        response += "This is the end. Would you like to play again? "
-    else:
-        # Possible exits from location
-        exits = location.getExits()
-        if len(exits) == 0:
-            response += "There are no exits, you are trapped. "
-        elif len(exits) == 1:
-            response += "The only exit is %s. " % (exits.keys()[0])
-        else:
-            tempKeys = exits.keys()
-            tempKeys.insert(-1, "and")
-            exitsString = ", ".join(tempKeys)
-            response += "There are exits to the %s. " % (exitsString)
-        response += "What would you like to do next? "
-
+    response = constructStatusString()
+    response += "What would you like to do next? "
     return question(response).reprompt(
         "You can move, check your status, or examine items.")
 
@@ -190,6 +212,9 @@ def move(direction):
         result = "You can't move that direction. "
     # Save current game state
     saveData(player, places, items)
+
+    # Read the exits of the new location
+    result += constructExitsString()
 
     return question(result + "What would you like to do next? ").reprompt(
         "You can move, check your status, or examine items.")
