@@ -9,7 +9,7 @@ def parsexml(file):
 	tree = ET.parse(file)
 	root = tree.getroot()
 	r = []
-	for room in root.findall('room'):
+	for room in root.findall('place'):
 		t = {}
 		t['id'] = room.get('id')
 		t['desc'] = room.find('desc').text

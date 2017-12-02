@@ -1,30 +1,62 @@
-<dungeon>
-<room id="0">
-	<desc>The room is dark and dank. The only light comes from the single exit to the room.</desc>
-	<north>1</north>
-	<east></east>
-	<west></west>
-	<south></south>
-	<object name="chair"></object>
-	<goal></goal>
-</room>
-<room id="1">
-	<desc>A narrow hallway illuminated by the flickering light of a torch mounted on the wall.</desc>
-	<north>2</north>
-	<east></east>
-	<west></west>
-	<south>0</south>
-	<object name="torch"></object>
-	<goal></goal>
-</room>
-<room id="2">
-	<desc>This is the room you have been looking for. A large chest sits in the center.</desc>
-	<north></north>
-	<east></east>
-	<west></west>
-	<south>1</south>
-	<object name="chest"></object>
-	<goal>true</goal>
-</room>
-
-</dungeon>
+<game title="Quiz Day">
+	<place id="0">
+		<desc>a dark room with a single candle in the center</desc>
+		<north></north>
+		<east></east>
+		<west></west>
+		<south></south>
+		<item id="0"></item>
+		<goal></goal>
+	</place>
+	<place>
+		<count>2</count>
+		<start id="0">east</start>
+		<end id="1">south</end>
+	</place>
+	<place id="1">
+		<desc>a brightly lit hallway with two pictures hanging on the wall</desc>
+		<north></north>
+		<east></east>
+		<west></west>
+		<south></south>
+		<item id="1"></item>
+		<item id="2"></item>
+		<goal></goal>
+	</place>
+	<place>
+		<count>1</count>
+		<start id="1">north</start>
+		<end id="2">west</end>
+	</place>
+	<place id="2">
+		<desc>a four door elevator you can feel moving</desc>
+		<north></north>
+		<east></east>
+		<west></west>
+		<south></south>
+		<item name="chest"></item>
+		<goal>true</goal>
+	</place>
+	<place>
+		<count>2</count>
+		<start id="2">south</start>
+		<end id="3">east</end>
+	</place>
+	<place id="3">
+		<desc>a classroom with the number 6113 on the door and a lone paper on the floor</desc>
+		<north></north>
+		<east></east>
+		<west></west>
+		<south>4</south>
+		<item id="3"></item>
+		<goal></goal>
+	</place>
+	<place id="3">
+		<desc>your house</desc>
+		<north>3</north>
+		<east></east>
+		<west></west>
+		<south>4</south>
+		<goal>True</goal>
+	</place>	
+</game>
