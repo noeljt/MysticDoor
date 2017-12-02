@@ -1,11 +1,13 @@
 from flask import Flask
 from flask_ask import Ask, statement, question, session
+from pymongo import MongoClient
 from place import *
 from player import *
 from item import *
 from website import *
 from narrator import *
 from generator import *
+from game import *
 import json
 import requests
 import time
@@ -18,15 +20,7 @@ app = Flask(__name__)
 ask = Ask(app, "/test")
 app.register_blueprint(website)
 
-
-@app.route('/')
-def homepage():
-    return "hi there, how ya doin?"
-
-# Functions
-
-
-def getData():
+def demoData():
     # This is where we will get data in JSON format from the database
     data = {}
     data["player"] = {"name": "Joe", "location": "0"}
@@ -113,10 +107,33 @@ def getData():
 
     return data
 
+# Connect to database and load one demo game
+# Default is localhost:27017
+client = MongoClient()
+db = client.mysticDoor
+games = db.games
+if games.count() == 0:
+    data = demoData()
+    game = Game("Quiz Day",
+                data['player'],
+                data['places'],
+                data['items'])
+    games.insert_one(game.export())
+    print("Game added to database")
+else:
+    print("Game already in database")
+
+
+@app.route('/')
+def homepage():
+    return "hi there, how ya doin?"
+
+# Functions
+
 def constructStatusString():
     # Tells where the player is and their movement options
     # Pull data froms session and convert to classes
-    player, places, items, location = loadData()
+    player, places, items, location = loadSessionData()
     # Items in location
     if location.hasItems():
         roomItems = location.getItems()
@@ -130,7 +147,7 @@ def constructStatusString():
     return response
 
 def constructExitsString():
-    player, places, items, location = loadData()
+    player, places, items, location = loadSessionData()
     response = ""
     if location.isGoal():
         response += "This is the end. Would you like to play again? "
@@ -150,7 +167,7 @@ def constructExitsString():
 
 
 
-def loadData():
+def loadSessionData():
     # Converts JSON session data into classes
     data = session.attributes["game"]
     player = Player(data["player"])
@@ -160,7 +177,7 @@ def loadData():
     return (player, places, items, location)
 
 
-def saveData(player, places, items):
+def saveSessionData(player, places, items):
     # Converts classes into JSON data and saves in session.attributes
     data = {}
     data["player"] = player.export()
@@ -178,7 +195,7 @@ def launchSkill():
     # Load game instance into session
     session.attributes['game'] = getData()
     # Pull data froms session and convert to classes
-    player, places, items, location = loadData()
+    player, places, items, location = loadSessionData()
     # Tell current location
     welcome_message += "You are in %s. " % (location.getDescription())
     welcome_message += "What would you like to do? "
@@ -199,7 +216,7 @@ def move(direction):
     # User tries to move in a direction
 
     # Pull data froms session and convert to classes
-    player, places, items, location = loadData()
+    player, places, items, location = loadSessionData()
     # Make sure movement is valid
     options = location.getExits()
     if direction in options.keys():
@@ -210,7 +227,7 @@ def move(direction):
     else:
         result = "You can't move that direction. "
     # Save current game state
-    saveData(player, places, items)
+    saveSessionData(player, places, items)
 
     # Read the exits of the new location
     result += constructExitsString()
@@ -222,7 +239,7 @@ def move(direction):
 @ask.intent("ExamineIntent")
 def examine(choice):
     # Load session data into variables
-    player, places, items, location = loadData()
+    player, places, items, location = loadSessionData()
     # For now we can only handle max four items
     letters = ["a", "B.", "C", "D"]
     # Load items from location into options {letter:itemID}
