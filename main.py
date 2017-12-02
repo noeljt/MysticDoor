@@ -165,6 +165,7 @@ def constructExitsString():
         response += "This is the end. Would you like to play again? "
     else:
         # Possible exits from location
+        response += constructPreviousString()
         exits = location.getExits()
         if len(exits) == 0:
             response += "There are no exits, you are trapped. "
@@ -176,6 +177,23 @@ def constructExitsString():
             exitsString = ", ".join(tempKeys)
             response += "There are exits to the %s. " % (exitsString)
     return response
+
+def constructPreviousString():
+    player, places, items, location = loadData()
+    response = ""
+    if(player.getPrevLocation() == player.getLocation()):
+        return response
+    else:
+        exits = location.getExits()
+        if(len(exits) == 0):
+            return response
+        else:
+            for key in exits:
+                if(exits[key] == player.getPrevLocation()):
+                    response += "You came from the %s. " % (key)
+                    return response
+    return response
+
 
 
 
