@@ -162,7 +162,9 @@ def constructPreviousString():
         else:
             for key in exits:
                 if(exits[key] == player.getPrevLocation()):
-                    response += "You came from the %s. " % (key) 
+                    response += "You came from the %s. " % (key)
+                    return response
+    return response
 
 
 
