@@ -140,7 +140,6 @@ def getData(title):
 def saveData():
     game = session.attributes["game"]
     result = games.replace_one({"_id": game._id }, game)
-    print result.matched_count, result.modified_count
 
 def constructStatusString():
     # Tells where the player is and their movement options
@@ -179,19 +178,24 @@ def constructExitsString():
     return response
 
 def constructPreviousString():
-    player, places, items, location = loadData()
+    player, places, items, location = loadSessionData()
     response = ""
-    if(player.getPrevLocation() == player.getLocation()):
+    if player.getPrevLocation() == player.getLocation():
+        print player.getPrevLocation(), player.getLocation()
         return response
     else:
         exits = location.getExits()
-        if(len(exits) == 0):
+        print 2
+        if len(exits) == 0:
+            print 3
             return response
         else:
             for key in exits:
-                if(exits[key] == player.getPrevLocation()):
+                print 4
+                if exits[key] == player.getPrevLocation():
                     response += "You came from the %s. " % (key)
                     return response
+    print 5
     return response
 
 

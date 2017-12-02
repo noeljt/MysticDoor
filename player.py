@@ -2,7 +2,10 @@ class Player(object):
     def __init__(self, data):
         self.name = data["name"]
         self.location = int(data["location"])
-        self.prev_location = int(data["location"])
+        if "prevLocation" in data:
+            self.prevLocation = int(data["prevLocation"])
+        else:
+            self.prevLocation = int(data["location"])
         if "items" in data:
             self.items = [int(item) for item in data["items"]]
         else:
@@ -10,7 +13,7 @@ class Player(object):
 
     # Change old location ID to new location ID
     def move(self, location):
-        self.prev_location = self.location
+        self.prevLocation = self.location
         self.location = location
 
     # Returns current location ID
@@ -19,7 +22,7 @@ class Player(object):
 
     #Returns the previous location ID
     def getPrevLocation(self):
-        return self.prev_location
+        return self.prevLocation
 
     # Returns name (string)
     def getName(self):
