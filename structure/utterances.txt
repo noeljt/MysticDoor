@@ -17,3 +17,7 @@ NoIntent negative
 ExamineIntent examine
 ExamineIntent {choice}
 ExamineIntent Examine {choice}
+
+PickupIntent pick up
+PickupIntent pick up an item
+PickupIntent get item
