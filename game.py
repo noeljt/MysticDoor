@@ -2,12 +2,15 @@
 # stores game data to save into mongoDB
 
 class Game(object):
-	#on initialization, establishes a connection with the database and pulls the necessary information
-	def __init__(self, title, player, places, items):
-		self.player = player
-		self.places = places
-		self.items = items
-		self.title = title
+	def __init__(self, data):
+		self.player = data["player"]
+		self.places = data["places"]
+		self.items = data["items"]
+		self.title = data["title"]
+		if "_id" in data:
+			self._id = data["_id"]
+		else:
+			self._id = -1
 
 	#returns a list of all items where the index is the ID and the value is the item
 	def getItems(self):
@@ -28,12 +31,3 @@ class Game(object):
 	# returns a JSON serializable representation of the class
 	def export(self):
 		return self.__dict__
-
-
-
-
-
-
-
-
-

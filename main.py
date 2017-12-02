@@ -20,6 +20,8 @@ app = Flask(__name__)
 ask = Ask(app, "/test")
 app.register_blueprint(website)
 
+# demoData generates the data to start a demo game
+
 def demoData():
     # This is where we will get data in JSON format from the database
     data = {}
@@ -107,17 +109,17 @@ def demoData():
 
     return data
 
-# Connect to database and load one demo game
+# Connect to database and load one demo game if none are present
 # Default is localhost:27017
 client = MongoClient()
 db = client.mysticDoor
 games = db.games
 if games.count() == 0:
     data = demoData()
-    game = Game("Quiz Day",
-                data['player'],
-                data['places'],
-                data['items'])
+    game = Game({"title": "Quiz Day",
+                "player": data['player'],
+                "places": data['places'],
+                "items": data['items']})
     games.insert_one(game.export())
     print("Game added to database")
 else:
@@ -129,6 +131,16 @@ def homepage():
     return "hi there, how ya doin?"
 
 # Functions
+
+def getData(title):
+    # Retrieve one game by title from the database
+    game = games.find({"title": title})[0]
+    return game
+
+def saveData():
+    game = session.attributes["game"]
+    result = games.replace_one({"_id": game._id }, game)
+    print result.matched_count, result.modified_count
 
 def constructStatusString():
     # Tells where the player is and their movement options
@@ -179,11 +191,10 @@ def loadSessionData():
 
 def saveSessionData(player, places, items):
     # Converts classes into JSON data and saves in session.attributes
-    data = {}
-    data["player"] = player.export()
-    data["places"] = [p.export() for p in places]
-    data["items"] = [i.export() for i in items]
-    session.attributes["game"] = data
+    game = session.attributes["game"]
+    game["player"] = player.export()
+    game["places"] = [p.export() for p in places]
+    game["items"] = [i.export() for i in items]
 
 # Alexa Logic
 
@@ -193,7 +204,7 @@ def launchSkill():
     # App starts here
     welcome_message = "Welcome to the Mystic Door. "
     # Load game instance into session
-    session.attributes['game'] = getData()
+    session.attributes['game'] = getData("Quiz Day")
     # Pull data froms session and convert to classes
     player, places, items, location = loadSessionData()
     # Tell current location
@@ -280,7 +291,7 @@ def examine(choice):
 
 @ask.intent("YesIntent")
 def yes():
-    session.attributes["game"] = getData()
+    session.attributes["game"] = getData("Quiz Day")
     text = "A new game has been made. "
     text += "Would you like to move or check your status? "
     return question(text).reprompt(
@@ -289,7 +300,12 @@ def yes():
 
 @ask.intent("NoIntent")
 def no():
+    saveData()
     return statement("Thank you for playing. ")
+
+@ask.session_ended
+def session_ended():
+    saveData()
 
 if __name__ == '__main__':
     app.run(debug=True)
