@@ -310,6 +310,16 @@ def examine(choice):
     return question(response).reprompt(
         "You can move, check your status, or examine items.")
 
+@ask.intent("PickupIntent")
+def pickup():
+    player, places, items, location = loadData()
+    locationItems = location.getItems()
+    response = "There is no item to pick up here."
+    if len(locationItems) > 0:
+        response = "You pick up a %s" % items[locationItems[0]].getName()
+    return question(response).reprompt(
+        "You can move, check your status, or examine items.")
+
 
 @ask.intent("YesIntent")
 def yes():
