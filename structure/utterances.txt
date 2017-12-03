@@ -1,6 +1,7 @@
 StatusIntent status
 StatusIntent check my status
 StatusIntent check status
+StatusIntent look around
 
 MoveIntent move {direction}
 MoveIntent go {direction}
