@@ -20,8 +20,8 @@ class Place(object):
         else:
             self.west = -1
         # If goal isn't present in data, assign it as False
-        if "goal" in place and place["goal"] == "True":
-            self.goal = True
+        if "goal" in place:
+            self.goal = place["goal"]
         else:
             self.goal = False
         # If items aren't present, assign it to an empty list

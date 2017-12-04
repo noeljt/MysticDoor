@@ -57,7 +57,7 @@ def demoData():
         "id": "4",
         "desc": "your house",
         "north": "3",
-        "goal": "True"
+        "goal": "true"
     })
 
     # Generate filler places
@@ -109,13 +109,98 @@ def demoData():
 
     return data
 
+def demoData2():
+    # This is where we will get data in JSON format from the database
+    data = {}
+    data["player"] = {"name": "Joe", "location": "0"}
+
+    data["places"] = []
+    # Formatting is thanks to PEP8 but this is temporary anyway
+    data["places"].append({
+        "id": "0",
+        "desc": "a cubicle, at your desk, at your dead-end job",
+        "items": ["0"]
+    })
+    # Generate two places
+    data["places"].append({
+        "id": "1",
+        "desc": "an empty meeting room with paper scattered around",
+        "items": ["1", "2"]
+    })
+    # Generate one place
+    data["places"].append({
+        "id": "2",
+        "desc": "an empty break room, your coworkers left garbage everywhere"
+    })
+    # Generate two places
+    data["places"].append({
+        "id": "3",
+        "desc": "the lobby, which to your surprise is also empty",
+        "south": "4",
+        "items": ["3"]
+    })
+    data["places"].append({
+        "id": "4",
+        "desc": "a dark room, where a loud noise startles you and" + 
+                " you wake up to your phone alarm labeled: final exams..." +
+                " the nightmare has begun",
+        "north": "3",
+        "goal": "True"
+    })
+
+    # Generate filler places
+    places = [Place(p) for p in data["places"]]
+    g = Generator()
+    places += [Place(p) for p in
+               g.generateRooms(places, 2, 0, "east", 1, "south")]
+    places += [Place(p) for p in
+               g.generateRooms(places, 1,  1, "north", 2, "west")]
+    places += [Place(p) for p in
+               g.generateRooms(places, 2,  2, "south", 3, "east")]
+    data["places"] = [p.export() for p in places]
+
+    data["items"] = []
+    data["items"].append({
+        "id": "0",
+        "name": "paper",
+        "desc": "a paper awaiting your signature"
+    })
+    data["items"].append({
+        "id": "1",
+        "name": "doodle",
+        "desc": "the result of a bored businessman at a meeeting"
+    })
+    data["items"].append({
+        "id": "2",
+        "name": "paper",
+        "desc": "a paper with a meeting agenda on it"
+    })
+    data["items"].append({
+        "id": "3",
+        "name": "paper",
+        "desc": "a paper on the front desk that reads: wake up"
+    })
+
+    # Generate 5 new random items and add each one to a random place
+    for i in range(5):
+        # Ids 0-3 are taken so start at 4
+        id = 4+i
+        # Append new item to the item data
+        data["items"].append(g.randItemData(id))
+        # Choose a random place by id
+        rand_place_id = random.randint(0, len(data["places"])-1)
+        # Append new item id to the place items data
+        data["places"][rand_place_id]["items"].append(id)
+
+    return data
+
 # Connect to database and load one demo game if none are present
 # Default is localhost:27017
 client = MongoClient()
 db = client.mysticDoor
 games = db.games
 if games.count() == 0:
-    data = demoData()
+    data = demoData2()
     game = Game({"title": "Quiz Day",
                 "player": data['player'],
                 "places": data['places'],
@@ -175,30 +260,24 @@ def constructExitsString():
             tempKeys.insert(-1, "and")
             exitsString = ", ".join(tempKeys)
             response += "There are exits to the %s. " % (exitsString)
+        response += "What would you like to do next? "
     return response
 
 def constructPreviousString():
     player, places, items, location = loadSessionData()
     response = ""
     if player.getPrevLocation() == player.getLocation():
-        print player.getPrevLocation(), player.getLocation()
         return response
     else:
         exits = location.getExits()
-        print 2
         if len(exits) == 0:
-            print 3
             return response
         else:
             for key in exits:
-                print 4
                 if exits[key] == player.getPrevLocation():
                     response += "You came from the %s. " % (key)
                     return response
-    print 5
     return response
-
-
 
 
 def loadSessionData():
@@ -239,7 +318,6 @@ def launchSkill():
 @ask.intent("StatusIntent")
 def status():
     response = constructStatusString()
-    response += "What would you like to do next? "
     return question(response).reprompt(
         "You can move, check your status, or examine items.")
 
@@ -265,7 +343,7 @@ def move(direction):
     # Read the exits of the new location
     result += constructExitsString()
 
-    return question(result + "What would you like to do next? ").reprompt(
+    return question(result).reprompt(
         "You can move, check your status, or examine items.")
 
 
@@ -287,7 +365,6 @@ def examine(choice):
     if choice in options:
         response = items[options[choice]].getDescription() + ". "
     else:
-        print choice
         if len(options) == 0:
             response = "You stare at your feet since"
             response += " there are no items here. "
@@ -312,11 +389,12 @@ def examine(choice):
 
 @ask.intent("PickupIntent")
 def pickup():
-    player, places, items, location = loadData()
+    player, places, items, location = loadSessionData()
     locationItems = location.getItems()
-    response = "There is no item to pick up here."
+    response = "There is no item to pick up here. "
     if len(locationItems) > 0:
-        response = "You pick up a %s" % items[locationItems[0]].getName()
+        response = "You pick up a %s. " % items[locationItems[0]].getName()
+    response += "What would you like to do next?"
     return question(response).reprompt(
         "You can move, check your status, or examine items.")
 
