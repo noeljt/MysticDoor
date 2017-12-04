@@ -34,10 +34,16 @@
         <img width="300px" style="margin:auto" src="static/mystic door logo.png">
         <h2 class="title">Mystic Door</h2>
         <form method=post enctype=multipart/form-data>
-            <label class="button">
-                Browse <input type="file" hidden>
-            </label>
-            <input class="button button-primary" type=submit value=Upload>
+              <FORM NAME="myForm"
+                ACTION="" 
+                
+   ENCTYPE="multipart/form-data"
+   METHOD="post">
+   <INPUT type="file" name="myFile1" accept="text/xml" >
+  
+   <INPUT TYPE="submit" VALUE="Upload File" onclick="return check()">
+</FORM>
+          
         </form>
     </section>
 </div>
