@@ -20,6 +20,10 @@ app = Flask(__name__)
 ask = Ask(app, "/test")
 app.register_blueprint(website)
 
+@app.route('/')
+def homepage():
+    return "hi there, how ya doin?"
+
 # demoData generates the data to start a demo game
 
 def demoData():
@@ -210,10 +214,6 @@ if games.count() == 0:
 else:
     print("Game already in database")
 
-
-@app.route('/')
-def homepage():
-    return "hi there, how ya doin?"
 
 # Functions
 
