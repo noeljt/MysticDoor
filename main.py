@@ -20,13 +20,13 @@ app = Flask(__name__)
 ask = Ask(app, "/test")
 app.register_blueprint(website)
 
+
 @app.route('/')
 def homepage():
     return "hi there, how ya doin?"
 
-# demoData generates the data to start a demo game
 
-def demoData():
+def demoData():  # demoData generates the data to start a demo game
     # This is where we will get data in JSON format from the database
     data = {}
     data["player"] = {"name": "Joe", "location": "0"}
@@ -113,6 +113,7 @@ def demoData():
 
     return data
 
+
 def demoData2():
     # This is where we will get data in JSON format from the database
     data = {}
@@ -145,7 +146,7 @@ def demoData2():
     })
     data["places"].append({
         "id": "4",
-        "desc": "a dark room, where a loud noise startles you and" + 
+        "desc": "a dark room, where a loud noise startles you and" +
                 " you wake up to your phone alarm labeled: final exams..." +
                 " the nightmare has begun",
         "north": "3",
@@ -206,9 +207,9 @@ games = db.games
 if games.count() == 0:
     data = demoData2()
     game = Game({"title": "Quiz Day",
-                "player": data['player'],
-                "places": data['places'],
-                "items": data['items']})
+                 "player": data['player'],
+                 "places": data['places'],
+                 "items": data['items']})
     games.insert_one(game.export())
     print("Game added to database")
 else:
@@ -217,14 +218,17 @@ else:
 
 # Functions
 
+
 def getData(title):
     # Retrieve one game by title from the database
     game = games.find({"title": title})[0]
     return game
 
+
 def saveData():
     game = session.attributes["game"]
-    result = games.replace_one({"_id": game._id }, game)
+    result = games.replace_one({"_id": game._id}, game)
+
 
 def constructStatusString():
     # Tells where the player is and their movement options
@@ -241,6 +245,7 @@ def constructStatusString():
         response = "There are no items here. "
     response += constructExitsString()
     return response
+
 
 def constructExitsString():
     player, places, items, location = loadSessionData()
@@ -262,6 +267,7 @@ def constructExitsString():
             response += "There are exits to the %s. " % (exitsString)
         response += "What would you like to do next? "
     return response
+
 
 def constructPreviousString():
     player, places, items, location = loadSessionData()
@@ -387,6 +393,7 @@ def examine(choice):
     return question(response).reprompt(
         "You can move, check your status, or examine items.")
 
+
 @ask.intent("PickupIntent")
 def pickup():
     player, places, items, location = loadSessionData()
@@ -413,9 +420,11 @@ def no():
     saveData()
     return statement("Thank you for playing. ")
 
+
 @ask.session_ended
 def session_ended():
     saveData()
+
 
 if __name__ == '__main__':
     app.run(debug=True)

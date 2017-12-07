@@ -20,7 +20,7 @@ class Player(object):
     def getLocation(self):
         return self.location
 
-    #Returns the previous location ID
+    # Returns the previous location ID
     def getPrevLocation(self):
         return self.prevLocation
 

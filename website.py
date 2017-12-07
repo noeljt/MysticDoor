@@ -13,11 +13,13 @@ import os
 UploadFolder = 'uploads/'
 AllowedExtensions = set(['xml'])
 
+
 # Check file name
 def allowedFilename(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in AllowedExtensions
 
 website = Blueprint("simple_page", __name__)
+
 
 @website.route("/", methods=["GET", "POST"])
 def index():

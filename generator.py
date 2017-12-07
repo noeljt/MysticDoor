@@ -21,7 +21,8 @@ class Generator(object):
         # Type
         self.setting = setting
 
-    def generateRooms(self, places, num, entrance, entranceDirection, exit=-1, exitDirection=""):
+    def generateRooms(self, places, num, entrance,
+                      entranceDirection, exit=-1, exitDirection=""):
         # Tie entrance to first generated place
         direction = entranceDirection
         places[entrance].changeExit(direction, len(places))
